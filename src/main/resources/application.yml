@@ -19,5 +19,7 @@ spring:
       mode: always
 logging:
   level:
-    org.hibernate.sql: true
-#    org.hibernate.type: trace
+    org:
+      apache:
+        coyote:
+          http11: debug
