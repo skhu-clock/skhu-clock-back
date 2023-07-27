@@ -1,5 +1,6 @@
 package com.example.skhuclock.domain.Weather;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,13 +12,22 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Embeddable
+@Schema(description = "날씨 관련 임베디드")
 public class Weather {
 
-    private Long temp;
+    @Schema(description = "온도")
+    private String temp;
 
-    private Long rainAmount;
+    @Schema(description = "강수확률")
+    private String precipitation;
 
-    private Long humid;
+    @Schema(description = "습도")
+    private String humid;
 
-    private String lastUpdateTime;
+    @Schema(description = "발표시각")
+    private String baseTime;
+
+    @Schema(description = "예보시각")
+    private String forecastTime;
+
 }
