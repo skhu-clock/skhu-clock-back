@@ -24,21 +24,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@Transactional
 @Slf4j
 public class WeatherService {
     @Value("${serviceKey}")
     private String serviceKey;
 
+    // 시간을 구하는 메소드 (단기일 때) , 초단기일때는 그대로 나옴
+    public String getHour(LocalDateTime now,int UrlId){
+
+        String hour;
+        // 단기 예보에서는 발표시각이 3시간에 한번이기 때문에 함수 필요
+        if(now.getHour() %3 == 2 || UrlId ==1){  // UrlId =1 이면 초단기 예보
+            hour = now.format(DateTimeFormatter.ofPattern("HH00"));
+        } else {
+            hour = now.minusHours(now.getHour() %3 + 1).format(DateTimeFormatter.ofPattern("HH00"));
+        }
+        return hour;
+    }
     // url 만들어주는 메소드
-    // 조금 더 수정 예정
     @SneakyThrows
-    public StringBuilder getUrl() {
-        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst"); //공개된 Url
+    public StringBuilder getUrl(int UrlId) {
+        StringBuilder urlBuilder;
+        if(UrlId == 1){
+            urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
+        }else {
+            urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
+        }
         LocalDateTime now = LocalDateTime.now();
         String yyyyMMdd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String hour;
-        hour = now.minusHours(0).format(DateTimeFormatter.ofPattern("HH00"));     //3시 54분 측정 3시 값 안나옴
+
+        String hour = getHour(now,UrlId);
 
         String nx = Integer.toString(57);
         String ny = Integer.toString(125);
@@ -53,53 +68,57 @@ public class WeatherService {
         urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(hour, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("nx", "UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("ny", "UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8"));
-        log.info("request url: {}", urlBuilder);
         return urlBuilder;
     }
 
-    public List<WeatherResponseDTO> weather() {
-        LocalDateTime now = LocalDateTime.now();
+    // 어플리케이션과 url 연결 (get)
+    // 에러가 나거나 아닌 경우에 따라 값 출력
+    public String ErrorApi(StringBuilder urlBuilder) throws IOException{
+        URL url = new URL(urlBuilder.toString());
+        log.info("request url: {}", url);
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
+
+        BufferedReader rd;
+        if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+        String data = sb.toString();
+        return data;
+    }
+
+    @Transactional
+    public List<WeatherResponseDTO> getWeather() {
         List<WeatherResponseDTO> listDto =new ArrayList<>();
-        String currentChangeTime = now.format(DateTimeFormatter.ofPattern("yy.MM.dd hh시 mm분"));
-        StringBuilder urlBuilder = getUrl();
+        StringBuilder urlBuilder = getUrl(2); //공개된 Url
         try {
+            LocalDateTime now = LocalDateTime.now();
+            String data = ErrorApi(urlBuilder);
 
+            // 수정 해야 할 것 같은 코드 -> requestDto 생성
+            ArrayList<String> temp = new ArrayList<>();
+            ArrayList<String> rainAmount = new ArrayList<>();
+            ArrayList<String> humid = new ArrayList<>();
+            ArrayList<String> fcstTimes = new ArrayList<>();
 
-            URL url = new URL(urlBuilder.toString());
-            log.info("request url: {}", url);
-// 어플리케이션과 url 연결 (get)
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-type", "application/json");
-
-// 에러가 나거나 아닌 경우에 따라 값 출력
-            BufferedReader rd;
-            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            } else {
-                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-            }
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            rd.close();
-            conn.disconnect();
-            String data = sb.toString();
-
-// 수정 해야 할 것 같은 코드 -> requestDto 생성
-            ArrayList<String> temp = new ArrayList<String>();
-            ArrayList<String> rainAmount = new ArrayList<String>();
-            ArrayList<String> humid = new ArrayList<String>();
-            ArrayList<String> fcstTimes = new ArrayList<String>();
-// jsonObject 관련 dto 생성 예정 or AOP 설정할 수도
             JSONObject jObject = new JSONObject(data);
             JSONObject response = jObject.getJSONObject("response");
             JSONObject body = response.getJSONObject("body");
             JSONObject items = body.getJSONObject("items");
             JSONArray jArray = items.getJSONArray("item");
-// 필요한 내용 찾아주는 메소드
+
+            // 필요한 내용 찾아주는 메소드 -> 추 후 단기예보 초단기예보 같이 쓸 경우 고칠 필요가 있어보임
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject obj = jArray.getJSONObject(i);
                 String category = obj.getString("category");
@@ -120,9 +139,9 @@ public class WeatherService {
 
 
             }
-// 필요한 내용 DTO로 저장
+            // 필요한 내용 DTO로 저장
             for (int i = 0; i < 5; i++) {
-                Weather weather = new Weather(temp.get(i), rainAmount.get(i), humid.get(i), fcstTimes.get(i),currentChangeTime);
+                Weather weather = new Weather(temp.get(i), rainAmount.get(i), humid.get(i), getHour(now,2),fcstTimes.get(i));
                 WeatherResponseDTO dto = WeatherResponseDTO.builder()
                         .weather(weather)
                         .message("OK").build();
@@ -133,7 +152,7 @@ public class WeatherService {
 
 
         } catch (IOException e) {
-// 오류 코드
+            // 오류 코드
             WeatherResponseDTO dto = WeatherResponseDTO.builder()
                     .weather(null)
                     .message("날씨 정보를 불러오는 중 오류가 발생했습니다").build();
@@ -141,4 +160,5 @@ public class WeatherService {
             return listDto;
         }
     }
+
 }

@@ -39,7 +39,7 @@ public class WeatherController {
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     public ResponseEntity<?> getWeather() {
-        List<WeatherResponseDTO> dto = weatherService.weather();
+        List<WeatherResponseDTO> dto = weatherService.getWeather();
         return ResponseEntity.ok(dto);
     }
 }
