@@ -1,10 +1,7 @@
 package com.example.skhuclock.domain.Crawling;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,28 +11,31 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 public class Notice {
+
+    //id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "number")
+
     private String number;
 
-    @Column(name = "status")
+    //상태
     private String status;
 
-    @Column(name = "title")
+    //공지사항 제목
     private String title;
 
-    @Column(name = "write_date")
+    //작성일
     private String writeDate;
 
-    @Column(name = "author")
+    //작성자
     private String author;
 
-    @Column(name = "views")
+    //조회수
     private int views;
 
-    @Column(name = "attachment")
-    private String attachment;
+    //url
+    private String url;
+
 }
