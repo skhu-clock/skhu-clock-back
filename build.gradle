@@ -32,6 +32,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'org.json:json:20230227'
+    implementation 'org.jsoup:jsoup:1.15.3'
+
 }
 
 tasks.named('test') {
