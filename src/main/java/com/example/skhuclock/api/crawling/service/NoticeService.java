@@ -5,6 +5,7 @@ package com.example.skhuclock.api.crawling.service;
 import com.example.skhuclock.domain.Crawling.NoticeRepository;
 import com.example.skhuclock.domain.Crawling.Notice;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,14 +19,15 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final String BASE_URL = "https://www.skhu.ac.kr";
     private final String URL = BASE_URL + "/skhu/1038/subview.do";
+
     @PostConstruct
     public List<Notice> getNoticeData() throws IOException {
         List<Notice> notices = new ArrayList<>();
-
 
         //Jsoup 연결
         Document document = Jsoup.connect(URL).get();
@@ -66,6 +68,12 @@ public class NoticeService {
             // BASE_URL(기본 https) + relativeUrl
             String fullUrl = BASE_URL + relativeUrl;
 
+
+            // articleNum 공지사항 number 가져오기
+            String href = linkElement.attr("href");
+            String[] parts = href.split("/");
+            String articleNum = parts[parts.length - 2];
+
             // Notice 객체 생성 후 리스트에 추가
             Notice notice = Notice.builder()
                     .number(number)
@@ -75,8 +83,10 @@ public class NoticeService {
                     .author(author)
                     .views(views)
                     .url(fullUrl)
+                    .articleNum(articleNum)
                     .build();
             notices.add(notice);
         }
         return noticeRepository.saveAll(notices);
-    }}
+    }
+}

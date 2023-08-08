@@ -12,11 +12,9 @@ import javax.persistence.*;
 @Builder
 public class Notice {
 
-    //id
+    //articleNum
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private String articleNum;
 
     private String number;
 
