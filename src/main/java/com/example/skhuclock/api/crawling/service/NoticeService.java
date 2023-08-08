@@ -1,6 +1,7 @@
 package com.example.skhuclock.api.crawling.service;
 
 
+
 import com.example.skhuclock.domain.Crawling.NoticeRepository;
 import com.example.skhuclock.domain.Crawling.Notice;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,12 @@ import java.util.List;
 @Service
 public class NoticeService {
     private final NoticeRepository noticeRepository;
-    private final String URL = "https://www.skhu.ac.kr/skhu/1038/subview.do";
-
-//    public String getNoticeUrl(int page) {
-//        return URL + "?" + "pageIndex=" + page;
-//    }
+    private final String BASE_URL = "https://www.skhu.ac.kr";
+    private final String URL = BASE_URL + "/skhu/1038/subview.do";
     @PostConstruct
     public List<Notice> getNoticeData() throws IOException {
         List<Notice> notices = new ArrayList<>();
+
 
         //Jsoup 연결
         Document document = Jsoup.connect(URL).get();
@@ -39,8 +38,14 @@ public class NoticeService {
             // 번호 추출 (공지사항의 번호는 td.td-num 안에 있는 span 클래스의 텍스트로 추출)
             String number = content.select("td.td-num span").text();
 
-            // 상태 추출 (공지사항의 상태는 td.td-ing 안에 있는 btn-ing 클래스의 텍스트로 추출)
-            String status = content.select("td.td-ing span.btn-ing").text();
+            // 상태 추출 (공지사항의 상태는 td.td-state 안에 있는 텍스트로 추출)
+            String status = content.select("td.td-state").text();
+            // "진행중"인 경우에만 상태를 "진행중"으로 설정, 그 외에는 빈 문자열로 설정
+            if ("진행중".equals(status)) {
+                status = "진행중";
+            } else {
+                status = "";
+            }
 
             // 제목 추출 (공지사항의 제목은 td.td-subject 안에 있는 strong 태그의 텍스트로 추출)
             String title = content.select("td.td-subject strong").text();
@@ -54,8 +59,12 @@ public class NoticeService {
             // 조회수 추출 (공지사항의 조회수는 td.td-access 안에 있는 텍스트를 정수로 변환하여 추출)
             int views = Integer.parseInt(content.select("td.td-access").text());
 
-            // 첨부파일 추출 (공지사항의 첨부파일은 td.td-file 안에 있는 파일 URL로 추출)
-            String attachment = content.select("td.td-file a").attr("abs:href");
+            // 공지사항 url 추출
+            Element linkElement = content.select("a").first();
+            String relativeUrl = linkElement.attr("href");
+
+            // BASE_URL(기본 https) + relativeUrl
+            String fullUrl = BASE_URL + relativeUrl;
 
             // Notice 객체 생성 후 리스트에 추가
             Notice notice = Notice.builder()
@@ -65,11 +74,9 @@ public class NoticeService {
                     .writeDate(writeDate)
                     .author(author)
                     .views(views)
-                    .attachment(attachment)
+                    .url(fullUrl)
                     .build();
             notices.add(notice);
         }
-       return noticeRepository.saveAll(notices);
-    }
-
-}
+        return noticeRepository.saveAll(notices);
+    }}
