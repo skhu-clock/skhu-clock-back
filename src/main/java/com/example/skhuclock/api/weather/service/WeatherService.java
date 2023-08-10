@@ -72,19 +72,17 @@ public class WeatherService {
     public String ErrorApi(StringBuilder urlBuilder) throws IOException{
         URL url = new URL(urlBuilder.toString());
         log.info("request url: {}", url);
+        log.info("가ㅏ가가가가ㅏ가");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        log.info(String.valueOf(conn.getInputStream()));
+        log.info("난나ㅏ나나나");
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
-        log.info(String.valueOf(conn.getInputStream()));
         BufferedReader rd;
         if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         } else {
             rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
         }
-        log.info(String.valueOf(conn.getInputStream()));
         StringBuilder sb = new StringBuilder();
         String line;
         while ((line = rd.readLine()) != null) {
@@ -92,7 +90,6 @@ public class WeatherService {
         }
         rd.close();
         conn.disconnect();
-        log.info(sb.toString());
         return sb.toString();
     }
 
@@ -100,10 +97,8 @@ public class WeatherService {
     public List<WeatherResponseDTO> getWeather() throws IOException {
         List<WeatherResponseDTO> listDto = new ArrayList<>();
         StringBuilder urlBuilder = getUrl(); //공개된 Url
-        log.info(ErrorApi(urlBuilder));
         try {
             String data = ErrorApi(urlBuilder);
-            log.info(data);
 
             // 수정 해야 할 것 같은 코드 -> requestDto 생성
             ArrayList<String> temp = new ArrayList<>();
