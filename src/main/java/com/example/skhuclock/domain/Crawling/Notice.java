@@ -1,6 +1,7 @@
 package com.example.skhuclock.domain.Crawling;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,30 +11,31 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Schema(description = "크롤링")
 public class Notice {
 
-    //articleNum
     @Id
+    @Schema(description = "공지사항 번호")
     private String articleNum;
 
+    @Schema(description = "중요공지 일반공지")
     private String number;
 
-    //상태
+    @Schema(description = "공지사항 상태")
     private String status;
 
-    //공지사항 제목
+    @Schema(description = "공지사항 제목")
     private String title;
 
-    //작성일
+    @Schema(description = "공지사항 작성일")
     private String writeDate;
 
-    //작성자
+    @Schema(description = "공지사항 작성자")
     private String author;
 
-    //조회수
+    @Schema(description = "공지사항 조회수")
     private int views;
 
-    //url
+    @Schema(description = "공지사항 url")
     private String url;
-
 }

@@ -33,7 +33,7 @@ public class WeatherController {
     private final WeatherService weatherService;
 
     @GetMapping
-    @Operation(summary = "weather json", description = "날씨 정보 출력", tags = {"View"})
+    @Operation(summary = "weather json", description = "날씨 정보 출력")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Weather.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))

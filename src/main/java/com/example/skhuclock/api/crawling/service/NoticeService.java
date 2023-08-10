@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final String BASE_URL = "https://www.skhu.ac.kr";
