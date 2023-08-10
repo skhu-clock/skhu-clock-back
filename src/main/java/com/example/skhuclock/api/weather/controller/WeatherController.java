@@ -38,7 +38,7 @@ public class WeatherController {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Weather.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    public ResponseEntity<?> getWeather() {
+    public ResponseEntity<List<WeatherResponseDTO>> getWeather() {
         List<WeatherResponseDTO> dto = weatherService.getWeather();
         return ResponseEntity.ok(dto);
     }
