@@ -24,8 +24,8 @@ public class Weather {
     @Schema(description = "습도")
     private String humid;
 
-    @Schema(description = "발표시각")
-    private String baseTime;
+    @Schema(description = "하늘상태")
+    private String sky;
 
     @Schema(description = "예보시각")
     private String forecastTime;

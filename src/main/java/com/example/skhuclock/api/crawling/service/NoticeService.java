@@ -1,7 +1,6 @@
 package com.example.skhuclock.api.crawling.service;
 
 
-
 import com.example.skhuclock.domain.Crawling.NoticeRepository;
 import com.example.skhuclock.domain.Crawling.Notice;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional
 public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final String BASE_URL = "https://www.skhu.ac.kr";
@@ -31,14 +32,16 @@ public class NoticeService {
 
         //Jsoup 연결
         Document document = Jsoup.connect(URL).get();
-
         // 각 공지사항마다 데이터 추출
-        Elements contents = document.select("table.board-table.horizon1 tbody tr.notice");
+        Elements contents = document.select("table.board-table.horizon1 tbody tr");
 
-        for (Element content : contents) {
+        //최근 공지사항 15개만 가져오기
+        int recentNotice = Math.min(contents.size(), 16);
+        for (int i = 0; i < recentNotice; i++) {
+            Element content = contents.get(i);
 
             // 번호 추출 (공지사항의 번호는 td.td-num 안에 있는 span 클래스의 텍스트로 추출)
-            String number = content.select("td.td-num span").text();
+            String number = content.select("td.td-num").text();
 
             // 상태 추출 (공지사항의 상태는 td.td-state 안에 있는 텍스트로 추출)
             String status = content.select("td.td-state").text();
@@ -48,7 +51,6 @@ public class NoticeService {
             } else {
                 status = "";
             }
-
             // 제목 추출 (공지사항의 제목은 td.td-subject 안에 있는 strong 태그의 텍스트로 추출)
             String title = content.select("td.td-subject strong").text();
 

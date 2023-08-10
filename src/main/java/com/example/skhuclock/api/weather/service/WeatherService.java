@@ -30,11 +30,11 @@ public class WeatherService {
     private String serviceKey;
 
     // 시간을 구하는 메소드 (단기일 때) , 초단기일때는 그대로 나옴
-    public String getHour(LocalDateTime now,int UrlId){
+    public String getHour(LocalDateTime now){
 
         String hour;
         // 단기 예보에서는 발표시각이 3시간에 한번이기 때문에 함수 필요
-        if(now.getHour() %3 == 2 || UrlId ==1){  // UrlId =1 이면 초단기 예보
+        if(now.getHour() %3 == 2){
             hour = now.format(DateTimeFormatter.ofPattern("HH00"));
         } else {
             hour = now.minusHours(now.getHour() %3 + 1).format(DateTimeFormatter.ofPattern("HH00"));
@@ -43,17 +43,15 @@ public class WeatherService {
     }
     // url 만들어주는 메소드
     @SneakyThrows
-    public StringBuilder getUrl(int UrlId) {
+    public StringBuilder getUrl() {
         StringBuilder urlBuilder;
-        if(UrlId == 1){
-            urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
-        }else {
-            urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
-        }
+        urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
+
         LocalDateTime now = LocalDateTime.now();
         String yyyyMMdd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 
-        String hour = getHour(now,UrlId);
+        String hour = getHour(now);
+
 
         String nx = Integer.toString(57);
         String ny = Integer.toString(125);
@@ -62,7 +60,7 @@ public class WeatherService {
         // StringBuilder.append 를 남용할 경우 문제 발생 -> 아직은 괜찮을 듯 합니다.
         urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + serviceKey);
         urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
-        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("60", "UTF-8"));
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("150", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("dataType", "UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("base_date", "UTF-8") + "=" + URLEncoder.encode(yyyyMMdd, "UTF-8"));
         urlBuilder.append("&" + URLEncoder.encode("base_time", "UTF-8") + "=" + URLEncoder.encode(hour, "UTF-8"));
@@ -94,16 +92,15 @@ public class WeatherService {
         }
         rd.close();
         conn.disconnect();
-        String data = sb.toString();
-        return data;
+
+        return sb.toString();
     }
 
     @Transactional
     public List<WeatherResponseDTO> getWeather() {
-        List<WeatherResponseDTO> listDto =new ArrayList<>();
-        StringBuilder urlBuilder = getUrl(2); //공개된 Url
+        List<WeatherResponseDTO> listDto = new ArrayList<>();
+        StringBuilder urlBuilder = getUrl(); //공개된 Url
         try {
-            LocalDateTime now = LocalDateTime.now();
             String data = ErrorApi(urlBuilder);
 
             // 수정 해야 할 것 같은 코드 -> requestDto 생성
@@ -111,6 +108,7 @@ public class WeatherService {
             ArrayList<String> rainAmount = new ArrayList<>();
             ArrayList<String> humid = new ArrayList<>();
             ArrayList<String> fcstTimes = new ArrayList<>();
+            ArrayList<String> skyData = new ArrayList<>();
 
             JSONObject jObject = new JSONObject(data);
             JSONObject response = jObject.getJSONObject("response");
@@ -132,6 +130,9 @@ public class WeatherService {
                     case "POP":
                         rainAmount.add(obsrValue);
                         break;
+                    case "SKY":
+                        skyData.add(obsrValue);
+                        break;
                     case "REH":
                         humid.add(obsrValue);
                         break;
@@ -140,13 +141,12 @@ public class WeatherService {
 
             }
             // 필요한 내용 DTO로 저장
-            for (int i = 0; i < 5; i++) {
-                Weather weather = new Weather(temp.get(i), rainAmount.get(i), humid.get(i), getHour(now,2),fcstTimes.get(i));
+            for (int i = 0; i < 12; i++) {
+                Weather weather = new Weather(temp.get(i), rainAmount.get(i), humid.get(i), skyData.get(i),fcstTimes.get(i));
                 WeatherResponseDTO dto = WeatherResponseDTO.builder()
                         .weather(weather)
                         .message("OK").build();
                 listDto.add(dto);
-
             }
             return listDto;
 
