@@ -95,9 +95,10 @@ public class WeatherService {
     }
 
     @Transactional
-    public List<WeatherResponseDTO> getWeather() {
+    public List<WeatherResponseDTO> getWeather() throws IOException {
         List<WeatherResponseDTO> listDto = new ArrayList<>();
         StringBuilder urlBuilder = getUrl(); //공개된 Url
+        log.info(ErrorApi(urlBuilder));
         try {
             String data = ErrorApi(urlBuilder);
             log.info(data);
