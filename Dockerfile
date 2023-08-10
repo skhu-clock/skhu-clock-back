@@ -7,4 +7,4 @@ ARG JAR_FILE=build/libs/*.jar
 # jar File Copy
 COPY ${JAR_FILE} app.jar
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=docker -DserviceKey=${SERVICE_KEY}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker","-DserviceKey=${{SERVICE_KEY}}", "-jar", "app.jar"]
