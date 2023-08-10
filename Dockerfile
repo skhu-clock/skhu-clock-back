@@ -7,7 +7,5 @@ ARG JAR_FILE=build/libs/*.jar
 # jar File Copy
 COPY ${JAR_FILE} app.jar
 
-ARG SEVICE_KEY
-ENV service=SEVICE_KEY
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=docker","-DserviceKey=service", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker","-jar", "app.jar"]
