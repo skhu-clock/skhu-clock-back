@@ -90,7 +90,7 @@ public class WeatherService {
         }
         rd.close();
         conn.disconnect();
-
+        log.info(sb.toString());
         return sb.toString();
     }
 
@@ -100,6 +100,7 @@ public class WeatherService {
         StringBuilder urlBuilder = getUrl(); //공개된 Url
         try {
             String data = ErrorApi(urlBuilder);
+            log.info(data);
 
             // 수정 해야 할 것 같은 코드 -> requestDto 생성
             ArrayList<String> temp = new ArrayList<>();
