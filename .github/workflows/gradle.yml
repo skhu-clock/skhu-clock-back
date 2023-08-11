@@ -49,9 +49,9 @@ jobs:
     - name: docker image build
       run: ./gradlew clean build --exclude-task test
     
-#     # Docker Hub push (4)
-#     - name: docker Hub push
-#       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
+    # Docker Hub push (4)
+    - name: docker Hub push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
       
     # GET GitHub IP (5)
     - name: get GitHub IP 
