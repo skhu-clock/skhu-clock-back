@@ -4,6 +4,7 @@ import com.example.skhuclock.api.weather.dto.WeatherResponseDTO;
 import com.example.skhuclock.domain.Weather.Weather;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -72,25 +73,36 @@ public class WeatherService {
     public String ErrorApi(StringBuilder urlBuilder) throws IOException{
         URL url = new URL(urlBuilder.toString());
         log.info("request url: {}", url);
-        log.info("가ㅏ가가가가ㅏ가");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        log.info("난나ㅏ나나나");
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/json");
-        BufferedReader rd;
-        if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
         StringBuilder sb = new StringBuilder();
         String line;
-        while ((line = rd.readLine()) != null) {
+        BufferedReader rd;
+        try {
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-type", "application/json");
+
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            rd.close();
+            conn.disconnect();
+            return sb.toString();
+        } catch (JSONException e){
+            log.info(url.toString());
+            log.info(((HttpURLConnection) url.openConnection()).getInputStream().toString());
+            log.info(((HttpURLConnection) url.openConnection()).getErrorStream().toString());
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            line = rd.readLine();
             sb.append(line);
+            return sb.toString();
         }
-        rd.close();
-        conn.disconnect();
-        return sb.toString();
+
     }
 
     @Transactional
