@@ -31,3 +31,4 @@ springdoc:
   paths-to-match:
 
 serviceKey: ${serviceKey}
+apiKey: ${apiKey} # 지하철 인증키
