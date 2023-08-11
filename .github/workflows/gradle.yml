@@ -37,18 +37,19 @@ jobs:
     # Spring Boot 어플리케이션 Build  (1)
     - name: Spring Boot Build 
       run: ./gradlew clean build --exclude-task test
-    
-    # Docker 이미지 Build (2)
-    - name: docker image build
-      run: ./gradlew docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot .
-    
-    # DockerHub Login (3)
+
+    # DockerHub Login (2)
     - name: docker login 
       uses: docker/login-action@v2
       with: 
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # Docker 이미지 Build (3)
+    - name: docker image build
+      run: ./gradlew ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot .
+    
+    
     # Docker Hub push (4)
     - name: docker Hub push
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
