@@ -47,7 +47,7 @@ jobs:
 
     # Docker 이미지 Build (3)
     - name: docker image build
-      run: ./gradlew ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot .
+      run: ./gradlew ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
     
     
     # Docker Hub push (4)
