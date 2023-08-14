@@ -27,20 +27,20 @@ jobs:
     - name: Spring Boot Build 
       run: ./gradlew clean build --exclude-task test
     
-    # # Docker 이미지 Build (2)
-    # - name: docker image build
-    #   run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot .
+    # Docker 이미지 Build (2)
+    - name: docker image build
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot .
     
-    # # DockerHub Login (3)
-    # - name: docker login 
-    #   uses: docker/login-action@v2
-    #   with: 
-    #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+    # DockerHub Login (3)
+    - name: docker login 
+      uses: docker/login-action@v2
+      with: 
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # # Docker Hub push (4)
-    # - name: docker Hub push
-    #   run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
+    # Docker Hub push (4)
+    - name: docker Hub push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
       
     # GET GitHub IP (5)
     - name: get GitHub IP 
@@ -71,7 +71,7 @@ jobs:
         script: |
           sudo docker stop spring-boot
           sudo docker rm spring-boot
-          sudo docker run ${{ secrets.ENVIRONMENT }} -it -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
+          sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
     
     # REMOVE Github IP FROM security group (9)
     - name: Remove IP FROM security group
