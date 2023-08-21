@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -38,7 +39,7 @@ public class WeatherController {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Weather.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    public ResponseEntity<?> getWeather() {
+    public ResponseEntity<List<WeatherResponseDTO>> getWeather() throws IOException {
         List<WeatherResponseDTO> dto = weatherService.getWeather();
         return ResponseEntity.ok(dto);
     }
