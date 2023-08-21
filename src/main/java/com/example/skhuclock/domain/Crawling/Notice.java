@@ -1,9 +1,7 @@
 package com.example.skhuclock.domain.Crawling;
 
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -11,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "크롤링")
+@Schema(description = "학사공지 크롤링")
 public class Notice {
 
     @Id
