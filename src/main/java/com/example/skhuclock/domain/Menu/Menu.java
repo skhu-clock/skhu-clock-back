@@ -29,7 +29,7 @@ public class Menu {
     private Long price;
 
     // 밥풀 and 1000원식당
-    @Column(nullable = false)
+    @Column
     @Schema(description = "메뉴 날짜")
     private String date;
 
