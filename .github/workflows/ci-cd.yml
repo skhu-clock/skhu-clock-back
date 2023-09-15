@@ -23,8 +23,7 @@ jobs:
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'temurin'
-        cache: 'gradle'
+        distribution: 'zulu'
     
     # gradlew 파일 권한 지정    
     - name: permission for gradlew
@@ -32,7 +31,7 @@ jobs:
       
     # Spring Boot 어플리케이션 Build  (1)
     - name: Spring Boot Build 
-      run: ./gradlew clean build --exclude-task test
+      run: ./gradlew clean build
     
 
     # DockerHub Login (2)
