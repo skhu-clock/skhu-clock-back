@@ -25,7 +25,7 @@ jobs:
         java-version: '11'
         distribution: 'zulu'
     
-    # gradlew 파일 권한 지정    
+    # gradlew 파일 권한 지정     
     - name: permission for gradlew
       run: chmod +x gradlew
       
