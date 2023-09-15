@@ -78,6 +78,7 @@ jobs:
         script: |
           sudo docker stop spring-boot
           sudo docker rm spring-boot
+          sudo docker pull spring-boot
           sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
     
     # REMOVE Github IP FROM security group (9)
