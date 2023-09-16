@@ -2,30 +2,22 @@ package com.example.skhuclock.api.kakaoMap.controller;
 
 import com.example.skhuclock.api.kakaoMap.dto.KakaoMapResponseDTO;
 import com.example.skhuclock.api.kakaoMap.service.KakaoMapService;
-import com.example.skhuclock.api.weather.dto.WeatherResponseDTO;
 import com.example.skhuclock.domain.Restaurant.Restaurant;
-import com.example.skhuclock.domain.Restaurant.RestaurantRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -35,12 +27,19 @@ import java.util.List;
 public class KakaoMapController {
 
     private final KakaoMapService kakaoMapService;
-    @PostConstruct
-    public ResponseEntity<?> getRestaurant() throws IOException, ParseException {
 
+    @GetMapping
+    @Operation(summary = "Restaurant json", description = "식당 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Restaurant.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
+    })
+    public ResponseEntity<List<KakaoMapResponseDTO>> getRestaurant() {
 
-        List<KakaoMapResponseDTO> restaurant = kakaoMapService.getRestaurant();
+        List<KakaoMapResponseDTO> dto = kakaoMapService.getRestaurant(1);
+        dto.addAll(kakaoMapService.getRestaurant(2));
+        return ResponseEntity.ok(dto);
 
-        return ResponseEntity.ok(restaurant);
     }
+
 }
