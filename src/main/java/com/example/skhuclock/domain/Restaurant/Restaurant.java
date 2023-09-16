@@ -21,6 +21,7 @@ public class Restaurant {
     @Schema(description = "식당 id")
     private Long id;
 
+
     @Schema(description = "식당까지의 거리")
     private String distance;
 
@@ -28,12 +29,15 @@ public class Restaurant {
     private String categoryName;
 
 
+    @Schema(description = "식당 url")
+    private String placeUrl;
 
-
+    @Column(unique = true)
     @Schema(description = "식당 이름")
     private String name;
 
     @Schema(description = "식당 주소")
-    private String addressName;            ;
+    private String addressName;
+
 
 }
