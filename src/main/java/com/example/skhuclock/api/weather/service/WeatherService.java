@@ -47,10 +47,13 @@ public class WeatherService {
         StringBuilder urlBuilder;
         urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
         LocalDateTime now = LocalDateTime.now();
-        String yyyyMMdd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-
+        String yyyyMMdd;
         String hour = getHour(now);
-
+        if(now.getHour()<2){
+            yyyyMMdd = now.minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        } else {
+            yyyyMMdd = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        }
 
         String nx = Integer.toString(57);
         String ny = Integer.toString(125);
@@ -105,7 +108,7 @@ public class WeatherService {
     }
 
     @Transactional
-    public List<WeatherResponseDTO> getWeather() throws IOException {
+    public List<WeatherResponseDTO> getWeather()  {
         List<WeatherResponseDTO> listDto = new ArrayList<>();
         StringBuilder urlBuilder = getUrl(); //공개된 Url
         try {
