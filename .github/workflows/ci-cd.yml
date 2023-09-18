@@ -49,8 +49,8 @@ jobs:
     - name: docker Hub push
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
       
-    # GET GitHub IP (5)
-    - name: get GitHub IP 
+    # GET GitHub IP (5) 
+    - name: get GitHub IP
       id: ip
       uses: haythem/public-ip@v1.2
       
