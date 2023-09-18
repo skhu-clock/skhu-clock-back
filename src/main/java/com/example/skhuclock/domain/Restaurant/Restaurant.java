@@ -2,6 +2,7 @@ package com.example.skhuclock.domain.Restaurant;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "식당")
+@Builder
 public class Restaurant {
 
     @Id
@@ -19,9 +21,23 @@ public class Restaurant {
     @Schema(description = "식당 id")
     private Long id;
 
-    @Column
+
+    @Schema(description = "식당까지의 거리")
+    private String distance;
+
+    @Schema(description = "카테고리")
+    private String categoryName;
+
+
+    @Schema(description = "식당 url")
+    private String placeUrl;
+
+    @Column(unique = true)
     @Schema(description = "식당 이름")
     private String name;
+
+    @Schema(description = "식당 주소")
+    private String addressName;
 
 
 }
