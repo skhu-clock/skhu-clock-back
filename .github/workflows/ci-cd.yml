@@ -76,9 +76,9 @@ jobs:
         password: ${{ secrets.EC2_PASSWORD }} 
         port: ${{ secrets.EC2_SSH_PORT }}
         script: |
-          sudo docker pull spring-boot
+          sudo docker pull spring-boot:latest
           sudo docker stop spring-boot
-          sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot
+          sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
           sudo docker rm $(docker ps --filter 'status=exited' -a -q)
           suod docker image prune -a -f
     # REMOVE Github IP FROM security group (9)
