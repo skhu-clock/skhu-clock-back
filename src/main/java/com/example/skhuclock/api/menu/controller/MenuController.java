@@ -32,7 +32,7 @@ public class MenuController {
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Menu.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
     })
-    public ResponseEntity<Menu> getAllMenus() throws IOException {
+    public ResponseEntity<Menu> getAllMenus() {
         return new ResponseEntity(menuService.getMenuData(),
                 HttpStatus.OK);
     }
