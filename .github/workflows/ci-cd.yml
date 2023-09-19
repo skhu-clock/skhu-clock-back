@@ -65,7 +65,8 @@ jobs:
     #  Add github ip to AWS (7)
     - name: Add GitHub IP to AWS
       run: |
-        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port ${{ secrets.EC2_SSH_PORT }} --cidr ${{ steps.ip.outputs.ipv4 }}/24
+        
     
     # AWS EC2 Server Connect & Docker 명령어 실행 (8) 
     - name: AWS EC2 Connection
