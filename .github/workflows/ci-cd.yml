@@ -76,8 +76,8 @@ jobs:
         password: ${{ secrets.EC2_PASSWORD }} 
         port: ${{ secrets.EC2_SSH_PORT }}
         script: |
+          sudo docker stop spring-boot
           sudo docker rm spring-boot
-          sudo docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
           sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
           sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
           suod docker image prune -a -f
