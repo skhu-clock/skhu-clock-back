@@ -33,7 +33,7 @@ public class SubwayService {
         try {
             String stationName = "온수";
             String encodedStationName = URLEncoder.encode(stationName, "UTF-8");
-            URL url = new URL("http://swopenapi.seoul.go.kr/api/subway/" + apiKey + "/json/realtimeStationArrival/1/5/" + encodedStationName);
+            URL url = new URL("http://swopenapi.seoul.go.kr/api/subway/" + apiKey + "/json/realtimeStationArrival/1/12/" + encodedStationName);
 
             String result = fetchDataFromUrl(url);
 
