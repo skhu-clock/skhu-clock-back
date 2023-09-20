@@ -13,6 +13,7 @@ import java.util.TimeZone;
 public class SkhuClockApplication {
 
     public static void main(String[] args) {
+        init();
         SpringApplication.run(SkhuClockApplication.class, args);
     }
 
