@@ -33,6 +33,13 @@ jobs:
     - name: Spring Boot Build 
       run : ./gradlew clean build --exclude-task test
     
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.0.2
+      id: current-time
+      with:
+         format: YYYY-MM-DDTHH-mm-ss
+         utcOffset: "+09:00"
+    
 
     # DockerHub Login (2) 
     - name: docker login 
