@@ -37,3 +37,4 @@ springdoc:
 
 serviceKey: ${serviceKey}
 apiKey: ${apiKey} # 지하철 인증키
+kakaoKey : ${kakaoKey}  # 카카오맵 인증키

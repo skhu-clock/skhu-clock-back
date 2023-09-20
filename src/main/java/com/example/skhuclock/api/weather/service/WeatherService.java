@@ -95,7 +95,6 @@ public class WeatherService {
             return sb.toString();
         } catch (JSONException e){
             log.info(url.toString());
-            log.info(((HttpURLConnection) url.openConnection()).getInputStream().toString());
             log.info(((HttpURLConnection) url.openConnection()).getErrorStream().toString());
             rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
             line = rd.readLine();
