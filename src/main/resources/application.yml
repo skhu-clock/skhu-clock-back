@@ -30,5 +30,10 @@ springdoc:
     doc-expansion: none
   paths-to-match:
 
+  logging:
+    discord:
+      webhook-url: ${DISCORD_WEBHOOK_URL}
+    config: classpath:logback.xml
+
 serviceKey: ${serviceKey}
 apiKey: ${apiKey} # 지하철 인증키
