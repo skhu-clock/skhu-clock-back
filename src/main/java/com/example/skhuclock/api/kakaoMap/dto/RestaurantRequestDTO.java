@@ -8,7 +8,7 @@ import lombok.Getter;
 public class RestaurantRequestDTO {
     private String placeName;
     private String categoryName;
-    private String distance;
+    private int distance;
     private String AddressName;
     private String place_url;
 
