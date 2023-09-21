@@ -23,7 +23,7 @@ public class Restaurant {
 
 
     @Schema(description = "식당까지의 거리")
-    private String distance;
+    private int distance;
 
     @Schema(description = "카테고리")
     private String categoryName;
