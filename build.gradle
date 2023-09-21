@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.13'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.example'
@@ -35,7 +36,10 @@ dependencies {
     implementation 'org.json:json:20230227'
     implementation 'org.jsoup:jsoup:1.15.4'
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
-        implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+    implementation 'com.github.napstr:logback-discord-appender:1.0.0'
+    //querydsl 추가
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
 }
 
 tasks.named('test') {
@@ -45,3 +49,20 @@ tasks.named('test') {
 jar {
     enabled = false
 }
+
+//-----------querydsl-----------//
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
+}
+//--------------------------------//
