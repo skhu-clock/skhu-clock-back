@@ -3,6 +3,7 @@ package com.example.skhuclock.api.kakaoMap.service;
 import com.example.skhuclock.api.kakaoMap.dto.KakaoMapResponseDTO;
 import com.example.skhuclock.api.kakaoMap.dto.RestaurantRequestDTO;
 import com.example.skhuclock.domain.Restaurant.Restaurant;
+import com.example.skhuclock.domain.Restaurant.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
@@ -30,7 +31,7 @@ public class KakaoMapService {
     @Value("${kakaoKey}")
     private String kakaoKey;
 
-
+    private final RestaurantRepository restaurantRepository;
     // url 만들어주는 메소드
     public URI getUrl(Integer page) {
         URI uri = UriComponentsBuilder
@@ -106,7 +107,7 @@ public class KakaoMapService {
                 RestaurantRequestDTO requestDTO = RestaurantRequestDTO.builder()
                         .AddressName(obj.getString("address_name"))
                         .categoryName(obj.getString("category_name"))
-                        .distance(obj.getString("distance"))
+                        .distance(obj.getInt("distance"))
                         .placeName(obj.getString("place_name"))
                         .place_url(obj.getString("place_url"))
                         .build();
@@ -146,5 +147,11 @@ public class KakaoMapService {
             return listDto;
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<KakaoMapResponseDTO> findAll(){
+        return restaurantRepository.findAll2().orElseThrow();
+    }
+
 
 }

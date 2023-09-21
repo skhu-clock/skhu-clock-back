@@ -42,4 +42,16 @@ public class KakaoMapController {
 
     }
 
+    @GetMapping("/distance")
+    @Operation(summary = "Restaurant json", description = "식당 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = Restaurant.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(schema = @Schema(implementation = Error.class)))
+    })
+    public ResponseEntity<List<KakaoMapResponseDTO>> getRestaurant2() {
+
+        return ResponseEntity.ok(kakaoMapService.findAll());
+
+    }
+
 }
