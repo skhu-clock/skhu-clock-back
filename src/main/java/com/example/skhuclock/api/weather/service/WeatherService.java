@@ -14,14 +14,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 @Service
@@ -43,9 +43,7 @@ public class WeatherService {
         return hour;
     }
     // url 만들어주는 메소드
-    public StringBuilder getUrl() {
-        StringBuilder urlBuilder;
-        urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst");
+    public UriComponents getUrl() {
         LocalDateTime now = LocalDateTime.now();
         String yyyyMMdd;
         String hour = getHour(now);
@@ -57,23 +55,24 @@ public class WeatherService {
 
         String nx = Integer.toString(57);
         String ny = Integer.toString(125);
+        UriComponents uri = UriComponentsBuilder
+                .fromUriString("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey={serviceKey}")
+                .queryParam("pageNo", 1)
+                .queryParam("numOfRows", 150)
+                .queryParam("dataType", "JSON")
+                .queryParam("base_date", yyyyMMdd)
+                .queryParam("base_time", hour)
+                .queryParam("nx", nx)
+                .queryParam("ny", ny)
+                .buildAndExpand(serviceKey);
 
 
-        // StringBuilder.append 를 남용할 경우 문제 발생 -> 아직은 괜찮을 듯 합니다.
-        urlBuilder.append("?").append(URLEncoder.encode("serviceKey", StandardCharsets.UTF_8)).append("=").append(serviceKey);
-        urlBuilder.append("&").append(URLEncoder.encode("pageNo", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("1", StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("numOfRows", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("150", StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("dataType", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode("JSON", StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("base_date", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(yyyyMMdd, StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("base_time", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(hour, StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("nx", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(nx, StandardCharsets.UTF_8));
-        urlBuilder.append("&").append(URLEncoder.encode("ny", StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(ny, StandardCharsets.UTF_8));
-        return urlBuilder;
+        return uri;
     }
 
     // 어플리케이션과 url 연결 (get)
     // 에러가 나거나 아닌 경우에 따라 값 출력
-    public String ErrorApi(StringBuilder urlBuilder) throws IOException{
+    public String ErrorApi(UriComponents urlBuilder) throws IOException{
         URL url = new URL(urlBuilder.toString());
         log.info("request url: {}", url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -110,7 +109,7 @@ public class WeatherService {
     @Transactional
     public List<WeatherResponseDTO> getWeather()  {
         List<WeatherResponseDTO> listDto = new ArrayList<>();
-        StringBuilder urlBuilder = getUrl(); //공개된 Url
+        UriComponents urlBuilder = getUrl(); //공개된 Url
         try {
             String data = ErrorApi(urlBuilder);
 
