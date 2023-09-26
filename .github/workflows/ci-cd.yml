@@ -83,11 +83,11 @@ jobs:
         password: ${{ secrets.EC2_PASSWORD }} 
         port: ${{ secrets.EC2_SSH_PORT }}
         script: |
-          sudo docker stop spring-boot
-          sudo docker rm spring-boot
-          sudo docker rmi -f "${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest"
-          sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
-          
+          # sudo docker stop spring-boot
+          # sudo docker rm spring-boot
+          # sudo docker rmi -f "${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest"
+          # sudo docker run ${{ secrets.ENVIRONMENT }} -d -p 8080:8080 --name spring-boot ${{ secrets.DOCKERHUB_USERNAME }}/spring-boot:latest
+          ${{ secrets.deploy }}
     # REMOVE Github IP FROM security group (9)
     - name: Remove IP FROM security group
       run: |
