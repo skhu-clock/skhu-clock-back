@@ -17,7 +17,6 @@ import javax.persistence.*;
 public class Restaurant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "식당 id")
     private Long id;
 

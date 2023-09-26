@@ -121,6 +121,7 @@ public class WeatherService {
             ArrayList<String> skyData = new ArrayList<>();
 
             JSONObject jObject = new JSONObject(data);
+            log.info(jObject.toString(),"아아아아");
             JSONObject response = jObject.getJSONObject("response");
             JSONObject body = response.getJSONObject("body");
             JSONObject items = body.getJSONObject("items");

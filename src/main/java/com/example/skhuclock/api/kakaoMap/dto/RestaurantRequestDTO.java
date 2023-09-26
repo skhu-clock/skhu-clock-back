@@ -6,6 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class RestaurantRequestDTO {
+    private Long id;
     private String placeName;
     private String categoryName;
     private int distance;

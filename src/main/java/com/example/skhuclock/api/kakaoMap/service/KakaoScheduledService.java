@@ -31,17 +31,16 @@ public class KakaoScheduledService {
         responseDtos.addAll(kakaoMapService.getRestaurant(2));
         for (int i = 0; i < 30; i++) {
             KakaoMapResponseDTO kakaoMapResponseDTO = responseDtos.get(i);
-            if (restaurantRepository.findByName(kakaoMapResponseDTO.getRestaurant().getName())== null) {
-                Restaurant restaurant = Restaurant.builder()
-                        .addressName(kakaoMapResponseDTO.getRestaurant().getAddressName())
-                        .distance(kakaoMapResponseDTO.getRestaurant().getDistance())
-                        .categoryName(kakaoMapResponseDTO.getRestaurant().getCategoryName())
-                        .name(kakaoMapResponseDTO.getRestaurant().getName())
-                        .placeUrl(kakaoMapResponseDTO.getRestaurant().getPlaceUrl())
-                        .build();
-                restaurantRepository.save(restaurant);
-            }
 
+            Restaurant restaurant = Restaurant.builder()
+                    .id((long) i + 1)
+                    .addressName(kakaoMapResponseDTO.getRestaurant().getAddressName())
+                    .distance(kakaoMapResponseDTO.getRestaurant().getDistance())
+                    .categoryName(kakaoMapResponseDTO.getRestaurant().getCategoryName())
+                    .name(kakaoMapResponseDTO.getRestaurant().getName())
+                    .placeUrl(kakaoMapResponseDTO.getRestaurant().getPlaceUrl())
+                    .build();
+            restaurantRepository.save(restaurant);
         }
 
 
