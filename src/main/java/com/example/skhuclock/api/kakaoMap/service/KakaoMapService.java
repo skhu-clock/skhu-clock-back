@@ -105,6 +105,7 @@ public class KakaoMapService {
             for (int i = 0; i < documents.length(); i++) {
                 JSONObject obj = documents.getJSONObject(i);
                 RestaurantRequestDTO requestDTO = RestaurantRequestDTO.builder()
+                        .id((long)(i+1)*page)
                         .AddressName(obj.getString("address_name"))
                         .categoryName(obj.getString("category_name"))
                         .distance(obj.getInt("distance"))
@@ -119,6 +120,7 @@ public class KakaoMapService {
                 RestaurantRequestDTO requestDTO = restaurants.get(i);
 
                 Restaurant restaurant = Restaurant.builder()
+                        .id(requestDTO.getId())
                         .name(requestDTO.getPlaceName())
                         .categoryName(requestDTO.getCategoryName())
                         .distance(requestDTO.getDistance())
