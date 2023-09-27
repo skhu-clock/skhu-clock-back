@@ -47,31 +47,25 @@ public class SubwayService {
                 List<SubwayRequestDto> l7l = new ArrayList<>();
                 for (int i = 0; i < realtimeArrivalList.length(); i++) {
                     JSONObject tmp = realtimeArrivalList.getJSONObject(i);
-
-                        SubwayRequestDto subway = SubwayRequestDto.builder()
-                                .subwayId(tmp.getLong("subwayId"))
-                                .updnLine(tmp.getString("updnLine"))
-                                .trainLineNm(tmp.getString("trainLineNm"))
-                                .arvlMsg2(tmp.getString("arvlMsg3"))
-                                .arvlMsg1(tmp.getString("arvlMsg2"))
-                                .arvlCd(tmp.getInt("arvlCd"))
-                                .build();
-
-
-
-
-
-                    if (subway.getSubwayId() == 1001 && subway.getUpdnLine().equals("상행")){
-                        l1h.add(subway);
-                    } else if (subway.getSubwayId() == 1001 && subway.getUpdnLine().equals("하행")) {
-                        l1l.add(subway);
-                    } else if (subway.getSubwayId() == 1007 && subway.getUpdnLine().equals("상행")) {
-                        l7h.add(subway);
-                    } else if (subway.getSubwayId() == 1007 && subway.getUpdnLine().equals("하행")) {
-                        l7l.add(subway);
-                    }
-
-
+                        if(tmp.getString("btrainSttus").equals("일반")){
+                            SubwayRequestDto subway = SubwayRequestDto.builder()
+                                    .subwayId(tmp.getLong("subwayId"))
+                                    .updnLine(tmp.getString("updnLine"))
+                                    .trainLineNm(tmp.getString("trainLineNm"))
+                                    .arvlMsg2(tmp.getString("arvlMsg3"))
+                                    .arvlMsg1(tmp.getString("arvlMsg2"))
+                                    .arvlCd(tmp.getInt("arvlCd"))
+                                    .build();
+                            if (subway.getSubwayId() == 1001 && subway.getUpdnLine().equals("상행")){
+                                l1h.add(subway);
+                            } else if (subway.getSubwayId() == 1001 && subway.getUpdnLine().equals("하행")) {
+                                l1l.add(subway);
+                            } else if (subway.getSubwayId() == 1007 && subway.getUpdnLine().equals("상행")) {
+                                l7h.add(subway);
+                            } else if (subway.getSubwayId() == 1007 && subway.getUpdnLine().equals("하행")) {
+                                l7l.add(subway);
+                            }
+                        }
 
                 }
 
