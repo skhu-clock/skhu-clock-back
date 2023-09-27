@@ -17,7 +17,7 @@
 </p>
 
 ## ERD 
-![image](https://github.com/skhu-clock/skhu-clock-back/assets/80959635/1175976e-7627-46c3-8393-749f642933fa)
+![image](https://github.com/skhu-clock/skhu-clock-back/assets/80959635/7c265575-b11f-4eae-afed-77c3a478fc1a)
 
 ## Api-docs
 [skhuClock-API-docs](http://skhuclock.duckdns.org/swagger-ui/index.html)
