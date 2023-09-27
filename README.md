@@ -16,6 +16,11 @@
 <img src="https://img.shields.io/badge/JSOUP-6DB33F?style=for-the-badge&logo=JSOUP&logoColor=white"/>
 </p>
 
+## 기능
+- 카카오맵 api
+- 공공데이터 포털 (서울 지하철, 단기예보)
+- 크롤링 (교내 홈페이지 학사 일정, 학사 공지)
+
 ## ERD 
 ![image](https://github.com/skhu-clock/skhu-clock-back/assets/80959635/7c265575-b11f-4eae-afed-77c3a478fc1a)
 
